@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
 import pandas as pd
+import os
+os.system("pip install matplotlib numpy sympy pandas")
 
 # Fungsi untuk mengonversi persamaan string ke fungsi numerik
 def parse_equation(equation_str):
