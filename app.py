@@ -1,10 +1,7 @@
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
 import sympy as sp
 import pandas as pd
-import os
-os.system("pip install matplotlib numpy sympy pandas")
 
 # Fungsi untuk mengonversi persamaan string ke fungsi numerik
 def parse_equation(equation_str):
@@ -74,26 +71,18 @@ def interpolasi_lagrange(x_values, y_values, x):
 def plot_lagrange(x_values, y_values, x_pred, y_pred):
     x_min, x_max = min(x_values), max(x_values)
     x_plot = np.linspace(x_min, x_max, 500)
-    y_plot = []
+    y_plot = [interpolasi_lagrange(x_values, y_values, x)[0] for x in x_plot]
 
-    for x in x_plot:
-        y, _ = interpolasi_lagrange(x_values, y_values, x)
-        y_plot.append(y)
+    data = pd.DataFrame({"x": x_plot, "y": y_plot})
+    st.line_chart(data, x="x", y="y")
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(x_plot, y_plot, label="Interpolasi Lagrange", color="blue", linewidth=2)
-    plt.scatter(x_values, y_values, color="red", label="Titik Data", s=100, zorder=5)
-    plt.scatter(x_pred, y_pred, color="green", label=f"Prediksi (x={x_pred}, y={y_pred:.4f})", s=150, edgecolors='black', zorder=6)
-    plt.title("Grafik Interpolasi Lagrange", fontsize=16)
-    plt.xlabel("x", fontsize=12)
-    plt.ylabel("y", fontsize=12)
-    plt.legend()
-    plt.grid(True)
-    st.pyplot(plt)
+    st.write("### Titik Data dan Prediksi")
+    st.write(f"Titik Data: {list(zip(x_values, y_values))}")
+    st.write(f"Prediksi: x = {x_pred}, y = {y_pred:.4f}")
 
 # Menu Opsi Antara Metode Interpolasi Lagrange dan Newton-Raphson
 def main():
-    st.title("Aplikasi Interpolasi dan Newton-Raphson")
+    st.title("Web Interpolasi dan Newton-Raphson")
 
     # Pilihan metode
     method = st.sidebar.selectbox(
@@ -158,15 +147,9 @@ def main():
             x_vals = np.linspace(x0 - 2, x0 + 2, 400)
             y_vals = f(x_vals)
 
-            plt.plot(x_vals, y_vals, label='f(x)')
-            plt.axhline(0, color='black', linewidth=0.5)
-            plt.scatter(root, f(root), color='red', label=f'Root at x = {root:.4f}')
-            plt.xlabel('x')
-            plt.ylabel('f(x)')
-            plt.title('Metode Newton-Raphson')
-            plt.legend()
-            plt.grid(True)
-            st.pyplot(plt)
+            data = pd.DataFrame({"x": x_vals, "y": y_vals})
+            st.line_chart(data, x="x", y="y")
+            st.write(f"### Akar ditemukan pada x = {root:.4f}")
 
 if __name__ == "__main__":
     main()
