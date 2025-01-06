@@ -1,14 +1,16 @@
 import streamlit as st
 import numpy as np
-import sympy as sp
 import pandas as pd
 
 # Fungsi untuk mengonversi persamaan string ke fungsi numerik
 def parse_equation(equation_str):
-    x = sp.symbols('x')
-    equation = sp.sympify(equation_str)
-    f = sp.lambdify(x, equation, 'numpy')  # Mengubah persamaan menjadi fungsi numpy
-    f_prime = sp.lambdify(x, sp.diff(equation, x), 'numpy')  # Turunan dari persamaan
+    def f(x):
+        return eval(equation_str)
+
+    def f_prime(x):
+        h = 1e-5  # Pendekatan dengan selisih kecil
+        return (f(x + h) - f(x - h)) / (2 * h)
+
     return f, f_prime
 
 # Metode Newton-Raphson
@@ -82,7 +84,7 @@ def plot_lagrange(x_values, y_values, x_pred, y_pred):
 
 # Menu Opsi Antara Metode Interpolasi Lagrange dan Newton-Raphson
 def main():
-    st.title("Web Interpolasi dan Newton-Raphson")
+    st.title("Aplikasi Interpolasi dan Newton-Raphson")
 
     # Pilihan metode
     method = st.sidebar.selectbox(
@@ -145,7 +147,7 @@ def main():
             root = float(result[-1].split()[-1])
             f, _ = parse_equation(equation_str)
             x_vals = np.linspace(x0 - 2, x0 + 2, 400)
-            y_vals = f(x_vals)
+            y_vals = [f(x) for x in x_vals]
 
             data = pd.DataFrame({"x": x_vals, "y": y_vals})
             st.line_chart(data, x="x", y="y")
