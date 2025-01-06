@@ -84,7 +84,7 @@ def plot_lagrange(x_values, y_values, x_pred, y_pred):
 
 # Menu Opsi Antara Metode Interpolasi Lagrange dan Newton-Raphson
 def main():
-    st.title("Aplikasi Interpolasi dan Newton-Raphson")
+    st.title("Web Interpolasi dan Newton-Raphson")
 
     # Pilihan metode
     method = st.sidebar.selectbox(
